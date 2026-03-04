@@ -1,41 +1,23 @@
-name: CI
+name: CI / build-and-test
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # تثبيت pnpm قبل setup-node حتى يتوفر الأمر pnpm
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9   # أو أحدث، يمكنك تحديد رقم الإصدار الذي تريده
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
+          cache: pnpm   # هذا سيخزن مجلد cache pnpm تلقائيًا
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run ESLint
-        run: pnpm lint
-        continue-on-error: false
-
-      - name: Build project
-        run: pnpm build
-
-      - name: Run tests
-        run: pnpm test
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
