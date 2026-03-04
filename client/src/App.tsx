@@ -14,6 +14,7 @@ import ActivityLogs from "./pages/ActivityLogs";
 import Alerts from "./pages/Alerts";
 import UserManagement from "./pages/UserManagement";
 import Reports from "./pages/Reports";
+import Map from "./pages/Map";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path={"/alerts"} component={Alerts} />
       <Route path={"/users"} component={UserManagement} />
       <Route path={"/reports"} component={Reports} />
+      <Route path={"/map"} component={Map} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

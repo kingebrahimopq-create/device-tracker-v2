@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { AlertCircle, Wifi, WifiOff, Wrench, Plus, Eye, Users, FileText, Activity } from "lucide-react";
+import { AlertCircle, Wifi, WifiOff, Wrench, Plus, Eye, Users, FileText, Activity, Map as MapIcon } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Dashboard() {
@@ -161,7 +161,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -203,6 +203,23 @@ export default function Dashboard() {
                 <Button className="w-full justify-start" variant="outline">
                   <Activity className="mr-2 h-4 w-4" />
                   سجل الأنشطة
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <MapIcon className="h-5 w-5" />
+                الخريطة
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Link href="/map">
+                <Button className="w-full justify-start" variant="outline">
+                  <MapIcon className="mr-2 h-4 w-4" />
+                  عرض الخريطة
                 </Button>
               </Link>
             </CardContent>
