@@ -22,11 +22,11 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
-      # 1. تثبيت pnpm أولاً (بدون تحديد إصدار ليقرأ 10.4.1 تلقائياً)
+      # 1. تثبيت pnpm أولاً
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
-      # 2. إعداد Node.js (لحل مشكلة عدم العثور على pnpm عند الـ cache)
+      # 2. إعداد Node.js مع التخزين المؤقت
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,16 +36,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 3. بناء ملفات الويب وعمل المزامنة (لحل مشكلة ملفات cordova/gradle المفقودة)
+      # 3. بناء ملفات الويب وعمل المزامنة
       - name: Build Web & Sync Capacitor
         run: |
           pnpm build
           npx cap sync android
 
-      # 4. بناء الأندرويد (البحث عن المجلد تلقائياً لتجنب خطأ No such directory)
+      # 4. بناء الأندرويد (نسخة Debug لكي تعمل فوراً على الموبايل)
       - name: Build Android app
         run: |
-          # البحث عن المجلد الذي يحتوي على gradlew وتشغيل البناء منه
           ANDROID_DIR=$(find . -name "gradlew" -printf '%h\n' | head -n 1)
           if [ -z "$ANDROID_DIR" ]; then
             echo "Error: Could not find android directory with gradlew"
@@ -54,13 +53,14 @@ jobs:
           echo "Building in: $ANDROID_DIR"
           cd "$ANDROID_DIR"
           chmod +x gradlew
-          ./gradlew assembleRelease
+          # التغيير هنا: استخدمنا assembleDebug بدلاً من assembleRelease
+          ./gradlew assembleDebug
 
-      # 5. رفع الـ APK (استخدام نمط بحث مرن لضمان العثور على الملف)
+      # 5. رفع الـ APK (سيكون الملف باسم app-debug.apk وهو صالح للتثبيت)
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: "**/build/outputs/apk/release/*.apk"
+          name: app-debug
+          path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
           
