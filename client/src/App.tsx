@@ -7,6 +7,10 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Devices from "./pages/Devices";
+import DeviceForm from "./pages/DeviceForm";
+import DeviceEdit from "./pages/DeviceEdit";
+import ActivityLogs from "./pages/ActivityLogs";
+import Alerts from "./pages/Alerts";
 
 function Router() {
   return (
@@ -14,6 +18,10 @@ function Router() {
       <Route path={"\\"} component={Home} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/devices"} component={Devices} />
+      <Route path={"/devices/new"} component={DeviceForm} />
+      <Route path={"/devices/:id/edit"} component={DeviceEdit} />
+      <Route path={"/activity-logs"} component={ActivityLogs} />
+      <Route path={"/alerts"} component={Alerts} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
