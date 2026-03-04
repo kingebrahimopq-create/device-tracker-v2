@@ -12,67 +12,38 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      # تثبيت pnpm
       - uses: pnpm/action-setup@v4
-
-      # إعداد Node.js مع cache
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
-      # تثبيت الاعتماديات (يشمل @capacitor/cli)
       - run: pnpm install
 
-      # بناء مشروع الويب (إذا كان لديك script build)
+      # تأكد من وجود script build في package.json
       - run: pnpm build
 
-      # مزامنة Capacitor مع Android باستخدام pnpm exec
+      # تثبيت Capacitor CLI إذا لم يكن موجوداً
+      - name: Ensure Capacitor CLI is installed
+        run: pnpm add -D @capacitor/cli
+
+      # مزامنة Capacitor مع Android
       - name: Sync Capacitor with Android
         run: pnpm exec cap sync android
 
-      # إعداد Java JDK
+      # إعداد Java وبناء Android
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # بناء APK عبر Gradle
       - name: Build Android app
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      # رفع APK
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: android/app/build/outputs/apk/release/app-release.apk
-          if-no-files-found: error
-      # 6. مزامنة Capacitor مع نظام Android الأساسي
-      #    هذا الأمر سينشئ/يحدث ملفات مثل capacitor.settings.gradle
-      - name: Sync Capacitor with Android
-        run: npx cap sync android
-
-      # 7. إعداد Java JDK
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      # 8. بناء APK باستخدام Gradle
-      - name: Build Android app
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleRelease
-
-      # 9. رفع APK
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
