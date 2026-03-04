@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { AlertCircle, Wifi, WifiOff, Wrench, Plus, Eye } from "lucide-react";
+import { AlertCircle, Wifi, WifiOff, Wrench, Plus, Eye, Users, FileText, Activity } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Dashboard() {
@@ -161,10 +161,13 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">الإجراءات السريعة</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Eye className="h-5 w-5" />
+                الأجهزة
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Link href="/devices">
@@ -179,68 +182,77 @@ export default function Dashboard() {
                   إضافة جهاز جديد
                 </Button>
               </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                المراقبة
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
               <Link href="/alerts">
                 <Button className="w-full justify-start" variant="outline">
                   <AlertCircle className="mr-2 h-4 w-4" />
                   عرض التنبيهات
                 </Button>
               </Link>
+              <Link href="/activity-logs">
+                <Button className="w-full justify-start" variant="outline">
+                  <Activity className="mr-2 h-4 w-4" />
+                  سجل الأنشطة
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
-          {/* System Status */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">حالة النظام</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                الإدارة
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">الخادم</span>
-                <Badge className="bg-green-100 text-green-800">نشط</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">قاعدة البيانات</span>
-                <Badge className="bg-green-100 text-green-800">متصلة</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">الإشعارات</span>
-                <Badge className={notifications?.count ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}>
-                  {notifications?.count || 0} جديدة
-                </Badge>
-              </div>
+            <CardContent className="space-y-3">
+              <Link href="/reports">
+                <Button className="w-full justify-start" variant="outline">
+                  <FileText className="mr-2 h-4 w-4" />
+                  التقارير
+                </Button>
+              </Link>
+              {user.role === "admin" && (
+                <Link href="/users">
+                  <Button className="w-full justify-start" variant="outline">
+                    <Users className="mr-2 h-4 w-4" />
+                    إدارة المستخدمين
+                  </Button>
+                </Link>
+              )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Recent Activity */}
+        {/* System Status */}
         <Card>
           <CardHeader>
-            <CardTitle>النشاط الأخير</CardTitle>
-            <CardDescription>آخر العمليات في النظام</CardDescription>
+            <CardTitle className="text-lg">حالة النظام</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-2 border-b">
-                <div>
-                  <p className="text-sm font-medium">تم إضافة جهاز جديد</p>
-                  <p className="text-xs text-muted-foreground">منذ 5 دقائق</p>
-                </div>
-                <Badge variant="outline">إنشاء</Badge>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b">
-                <div>
-                  <p className="text-sm font-medium">تم تحديث حالة الجهاز</p>
-                  <p className="text-xs text-muted-foreground">منذ 15 دقيقة</p>
-                </div>
-                <Badge variant="outline">تحديث</Badge>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <p className="text-sm font-medium">تنبيه جديد</p>
-                  <p className="text-xs text-muted-foreground">منذ 30 دقيقة</p>
-                </div>
-                <Badge variant="outline">تنبيه</Badge>
-              </div>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">الخادم</span>
+              <Badge className="bg-green-100 text-green-800">نشط</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">قاعدة البيانات</span>
+              <Badge className="bg-green-100 text-green-800">متصلة</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">الإشعارات</span>
+              <Badge className={notifications?.count ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}>
+                {notifications?.count || 0} جديدة
+              </Badge>
             </div>
           </CardContent>
         </Card>

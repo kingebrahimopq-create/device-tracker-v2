@@ -12,6 +12,8 @@ import DeviceEdit from "./pages/DeviceEdit";
 import DeviceDetail from "./pages/DeviceDetail";
 import ActivityLogs from "./pages/ActivityLogs";
 import Alerts from "./pages/Alerts";
+import UserManagement from "./pages/UserManagement";
+import Reports from "./pages/Reports";
 
 function Router() {
   return (
@@ -24,6 +26,8 @@ function Router() {
       <Route path={"/devices/:id"} component={DeviceDetail} />
       <Route path={"/activity-logs"} component={ActivityLogs} />
       <Route path={"/alerts"} component={Alerts} />
+      <Route path={"/users"} component={UserManagement} />
+      <Route path={"/reports"} component={Reports} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
