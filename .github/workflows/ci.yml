@@ -22,10 +22,9 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
-      # 1. إعداد pnpm أولاً بدون تحديد إصدار (سيقرأ الإصدار 10.4.1 من package.json تلقائياً)
+      # 1. إعداد pnpm أولاً بدون إصدار محدد لتجنب التعارض
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        # حذفنا سطر version: 8 لحل مشكلة التعارض
 
       # 2. إعداد Node.js مع التخزين المؤقت
       - name: Setup Node.js
@@ -37,9 +36,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # 3. البحث عن مجلد أندرويد وبنائه تلقائياً لتجنب خطأ "No such file"
       - name: Build Android app
         run: |
-          cd tracker-v2/device-tracker-v2/android
+          # هذا الأمر سيبحث عن المجلد الذي يحتوي على ملف gradlew ويقوم بالبناء فيه
+          ANDROID_DIR=$(find . -name "gradlew" -printf '%h\n' | head -n 1)
+          echo "Found Android directory at: $ANDROID_DIR"
+          cd "$ANDROID_DIR"
           chmod +x gradlew
           ./gradlew assembleRelease
 
@@ -47,5 +50,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: tracker-v2/device-tracker-v2/android/app/build/outputs/apk/release/*.apk
+          # استخدام النجمة المزدوجة للبحث عن الـ APK في أي مكان تم إنشاؤه فيه
+          path: "**/build/outputs/apk/release/*.apk"
           
