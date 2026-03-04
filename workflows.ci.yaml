@@ -22,9 +22,11 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
+      # 1. تثبيت pnpm أولاً (بدون تحديد إصدار ليقرأ 10.4.1 تلقائياً)
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
+      # 2. إعداد Node.js (لحل مشكلة عدم العثور على pnpm عند الـ cache)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,30 +36,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # 3. بناء ملفات الويب وعمل المزامنة (لحل مشكلة ملفات cordova/gradle المفقودة)
       - name: Build Web & Sync Capacitor
         run: |
           pnpm build
           npx cap sync android
 
+      # 4. بناء الأندرويد (البحث عن المجلد تلقائياً لتجنب خطأ No such directory)
       - name: Build Android app
         run: |
-          # البحث عن مجلد أندرويد والدخول إليه
+          # البحث عن المجلد الذي يحتوي على gradlew وتشغيل البناء منه
           ANDROID_DIR=$(find . -name "gradlew" -printf '%h\n' | head -n 1)
+          if [ -z "$ANDROID_DIR" ]; then
+            echo "Error: Could not find android directory with gradlew"
+            exit 1
+          fi
+          echo "Building in: $ANDROID_DIR"
           cd "$ANDROID_DIR"
           chmod +x gradlew
-          # بناء النسخة
           ./gradlew assembleRelease
-          
-          # خطوة تشخيصية: عرض مكان ملف الـ APK للتأكد من وجوده
-          echo "Listing all generated APKs:"
-          find . -name "*.apk"
 
+      # 5. رفع الـ APK (استخدام نمط بحث مرن لضمان العثور على الملف)
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          # هذا المسار سيبحث في كامل المشروع عن أي ملف apk تم إنتاجه
-          path: "**/*.apk"
-          # لضمان فشل الأكشن إذا لم يجد الملف فعلياً
+          path: "**/build/outputs/apk/release/*.apk"
           if-no-files-found: error
-          
