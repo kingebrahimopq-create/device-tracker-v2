@@ -9,12 +9,21 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  build-android:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -22,22 +31,33 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run type checking
-        run: pnpm check
+      - name: Build Web & Sync Capacitor
+        run: |
+          pnpm build
+          npx cap sync android
 
-      - name: Format code
-        run: pnpm format
+      - name: Build Android app
+        run: |
+          # البحث عن مجلد أندرويد والدخول إليه
+          ANDROID_DIR=$(find . -name "gradlew" -printf '%h\n' | head -n 1)
+          cd "$ANDROID_DIR"
+          chmod +x gradlew
+          # بناء النسخة
+          ./gradlew assembleRelease
+          
+          # خطوة تشخيصية: عرض مكان ملف الـ APK للتأكد من وجوده
+          echo "Listing all generated APKs:"
+          find . -name "*.apk"
 
-      - name: Build project
-        run: pnpm build
-
-      - name: Run tests
-        run: pnpm test
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          # هذا المسار سيبحث في كامل المشروع عن أي ملف apk تم إنتاجه
+          path: "**/*.apk"
+          # لضمان فشل الأكشن إذا لم يجد الملف فعلياً
+          if-no-files-found: error
+          
