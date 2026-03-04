@@ -5,14 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
-    "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "start": "NODE_ENV=production node dist/index.js",
+    "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist/public",
+    "start": "NODE_ENV=production node dist/public/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
-
-    // scripts جديدة لـ Capacitor
     "cap:add:android": "cap add android",
     "cap:sync:android": "cap sync android",
     "cap:open:android": "cap open android"
