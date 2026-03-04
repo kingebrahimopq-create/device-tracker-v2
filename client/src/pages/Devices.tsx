@@ -177,6 +177,13 @@ export default function Devices() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                onClick={() => navigate(`/devices/${device.id}`)}
+                              >
+                                عرض
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={() => navigate(`/devices/${device.id}/edit`)}
                               >
                                 <Edit2 className="h-4 w-4" />

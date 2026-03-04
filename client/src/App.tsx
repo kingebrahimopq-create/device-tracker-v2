@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Devices from "./pages/Devices";
 import DeviceForm from "./pages/DeviceForm";
 import DeviceEdit from "./pages/DeviceEdit";
+import DeviceDetail from "./pages/DeviceDetail";
 import ActivityLogs from "./pages/ActivityLogs";
 import Alerts from "./pages/Alerts";
 
@@ -20,6 +21,7 @@ function Router() {
       <Route path={"/devices"} component={Devices} />
       <Route path={"/devices/new"} component={DeviceForm} />
       <Route path={"/devices/:id/edit"} component={DeviceEdit} />
+      <Route path={"/devices/:id"} component={DeviceDetail} />
       <Route path={"/activity-logs"} component={ActivityLogs} />
       <Route path={"/alerts"} component={Alerts} />
       <Route path={"/404"} component={NotFound} />
