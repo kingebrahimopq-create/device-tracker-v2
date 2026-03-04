@@ -1,26 +1,54 @@
-name: CI / build-and-test
+name: CI / Build Android APK
 
+# متى يتم تشغيل الـ workflow
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1. سحب الكود من المستودع
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # تثبيت pnpm حسب الإصدار المحدد في package.json (حقل packageManager)
-      - uses: pnpm/action-setup@v4
+      # 2. تثبيت pnpm (الإصدار يُقرأ تلقائياً من package.json)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      # 3. تثبيت Node.js (الإصدار 20) مع تفعيل cache لـ pnpm
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm test
+      # 4. تثبيت الاعتماديات (dependencies)
+      - name: Install dependencies
+        run: pnpm install
+
+      # 5. إعداد Java JDK (مطلوب لبناء Android)
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'          # توزيعة Zulu مضمونة ومجانية
+          java-version: '17'            # الإصدار المناسب لآخر إصدارات Gradle
+
+      # 6. بناء تطبيق Android (نسخة release)
+      - name: Build Android app
+        run: |
+          cd android
+          chmod +x gradlew              # منح صلاحية التنفيذ لـ Gradle wrapper
+          ./gradlew assembleRelease      # بناء APK بنسخة release
+
+      # 7. رفع ملف APK الناتج كـ artifact
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release              # اسم المجلد الذي سيظهر في artifacts
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error       # إذا لم يوجد الملف، يفشل الـ job
