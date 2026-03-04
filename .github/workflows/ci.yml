@@ -22,13 +22,12 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
-      # 1. تثبيت pnpm أولاً (هذا هو التعديل المطلوب)
+      # 1. إعداد pnpm أولاً بدون تحديد إصدار (سيقرأ الإصدار 10.4.1 من package.json تلقائياً)
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 8
+        # حذفنا سطر version: 8 لحل مشكلة التعارض
 
-      # 2. الآن يمكن إعداد Node.js واستخدام pnpm للـ cache
+      # 2. إعداد Node.js مع التخزين المؤقت
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
