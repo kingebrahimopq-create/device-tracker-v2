@@ -15,32 +15,29 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22          # مطلوب لـ Capacitor CLI >=22
+          node-version: 22
           cache: pnpm
 
       - run: pnpm install
-
-      # بناء مشروع الويب (إذا كان لديك script build)
       - run: pnpm build
 
-      # تأكد من وجود Capacitor CLI (إذا لم يكن في package.json)
+      # تثبيت Capacitor CLI إذا لم يكن موجوداً
       - name: Ensure Capacitor CLI is installed
         run: pnpm add -D @capacitor/cli
 
-      # تثبيت حزمة Android platform
+      # تثبيت منصة Android
       - name: Install Capacitor Android platform
         run: pnpm add @capacitor/android
 
-      # مزامنة Capacitor مع Android
       - name: Sync Capacitor with Android
         run: pnpm exec cap sync android
 
-      # إعداد Java وبناء Android
+      # ✅ استخدام Java 21 (بدلاً من 17)
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
 
       - name: Build Android app
         run: |
