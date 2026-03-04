@@ -1,6 +1,5 @@
-name: CI / Build Android APK
+name: CI / Build Android APK (Capacitor)
 
-# متى يتم تشغيل الـ workflow
 on:
   push:
     branches: [ main, master ]
@@ -12,43 +11,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. سحب الكود من المستودع
+      # 1. سحب الكود
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. تثبيت pnpm (الإصدار يُقرأ تلقائياً من package.json)
+      # 2. تثبيت pnpm
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
-      # 3. تثبيت Node.js (الإصدار 20) مع تفعيل cache لـ pnpm
+      # 3. تثبيت Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
-      # 4. تثبيت الاعتماديات (dependencies)
+      # 4. تثبيت الاعتماديات
       - name: Install dependencies
         run: pnpm install
 
-      # 5. إعداد Java JDK (مطلوب لبناء Android)
+      # 5. بناء مشروع الويب (إذا كان هناك script build)
+      #    تأكد من أن package.json يحتوي على script "build"
+      - name: Build web project
+        run: pnpm build
+
+      # 6. مزامنة Capacitor مع نظام Android الأساسي
+      #    هذا الأمر سينشئ/يحدث ملفات مثل capacitor.settings.gradle
+      - name: Sync Capacitor with Android
+        run: npx cap sync android
+
+      # 7. إعداد Java JDK
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'          # توزيعة Zulu مضمونة ومجانية
-          java-version: '17'            # الإصدار المناسب لآخر إصدارات Gradle
+          distribution: 'zulu'
+          java-version: '17'
 
-      # 6. بناء تطبيق Android (نسخة release)
+      # 8. بناء APK باستخدام Gradle
       - name: Build Android app
         run: |
           cd android
-          chmod +x gradlew              # منح صلاحية التنفيذ لـ Gradle wrapper
-          ./gradlew assembleRelease      # بناء APK بنسخة release
+          chmod +x gradlew
+          ./gradlew assembleRelease
 
-      # 7. رفع ملف APK الناتج كـ artifact
+      # 9. رفع APK
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release              # اسم المجلد الذي سيظهر في artifacts
+          name: app-release
           path: android/app/build/outputs/apk/release/app-release.apk
-          if-no-files-found: error       # إذا لم يوجد الملف، يفشل الـ job
+          if-no-files-found: error
