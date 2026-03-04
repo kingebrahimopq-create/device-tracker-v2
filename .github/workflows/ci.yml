@@ -19,24 +19,25 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17' # أو الإصدار الذي يستخدمه مشروعك
+          java-version: '17'
           distribution: 'zulu'
 
+      # 1. تثبيت pnpm أولاً (هذا هو التعديل المطلوب)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      # 2. الآن يمكن إعداد Node.js واستخدام pnpm للـ cache
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "pnpm"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # بناء مشروع الأندرويد (تأكد من المسار الصحيح للمجلد)
       - name: Build Android app
         run: |
           cd tracker-v2/device-tracker-v2/android
@@ -47,6 +48,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          # تم تصحيح المسار ليتناسب مع هيكلة المجلدات في مشروعك
           path: tracker-v2/device-tracker-v2/android/app/build/outputs/apk/release/*.apk
           
