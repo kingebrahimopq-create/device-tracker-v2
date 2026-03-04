@@ -1,0 +1,25 @@
+import { useEffect } from "react";
+
+export function Sidebar() {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        // حط هنا أي منطق لإغلاق الـ sidebar
+        console.log("Sidebar closed");
+      }
+    };
+
+    // بدون window prefix (متوافق مع Deno)
+    addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <aside className="sidebar">
+      {/* محتوى السايدبار هنا */}
+    </aside>
+  );
+}
