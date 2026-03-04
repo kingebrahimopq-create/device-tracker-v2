@@ -1,14 +1,26 @@
-steps:
-  - uses: actions/checkout@v4
+name: CI / build-and-test
 
-  # تثبيت ppnpm حسب الإصدار المحدد في package.json (دون تحديد version)
-  - uses: pnpm/action-setup@v4
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-  - uses: actions/setup-node@v4
-    with:
-      node-version: 20
-      cache: pnpm
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-  - run: pnpm install
-  - run: pnpm build
-  - run: pnpm test
+    steps:
+      - uses: actions/checkout@v4
+
+      # تثبيت pnpm حسب الإصدار المحدد في package.json (حقل packageManager)
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
