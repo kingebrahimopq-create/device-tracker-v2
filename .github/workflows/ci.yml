@@ -1,63 +1,52 @@
-name: CI / Build Android APK (Capacitor)
+name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. سحب الكود
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # 2. تثبيت pnpm (يقرأ الإصدار من package.json تلقائياً)
-      - uses: pnpm/action-setup@v4
-
-      # 3. إعداد Node.js 22 (مطلوب لـ Capacitor CLI)
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      # 4. تثبيت الاعتماديات (dependencies) من package.json
-      - run: pnpm install
-
-      # 5. بناء مشروع الويب (إذا كان لديك script build في package.json)
-      #    استخدم pnpm build أو أي أمر بناء خاص بمشروعك
-      - run: pnpm build
-
-      # 6. التأكد من وجود حزمة @capacitor/android (ضرورية لمزامنة Android)
-      #    هذه الخطوة تضمن تثبيتها إذا لم تكن موجودة في package.json
-      - name: Install Capacitor Android platform (if missing)
-        run: pnpm add @capacitor/android
-
-      # 7. مزامنة Capacitor مع منصة Android
-      #    يُنشئ/يحدث ملفات المشروع في مجلد android
-      - name: Sync Capacitor with Android
-        run: pnpm exec cap sync android
-
-      # 8. إعداد Java 21 (مطلوب لبناء المشروع)
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
+          java-version: '17' # أو الإصدار الذي يستخدمه مشروعك
           distribution: 'zulu'
-          java-version: '21'
 
-      # 9. بناء APK باستخدام Gradle
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # بناء مشروع الأندرويد (تأكد من المسار الصحيح للمجلد)
       - name: Build Android app
         run: |
-          cd android
+          cd tracker-v2/device-tracker-v2/android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      # 10. رفع ملف APK الناتج
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: android/app/build/outputs/apk/release/app-release.apk
-          if-no-files-found: error
+          # تم تصحيح المسار ليتناسب مع هيكلة المجلدات في مشروعك
+          path: tracker-v2/device-tracker-v2/android/app/build/outputs/apk/release/*.apk
+          
