@@ -34,9 +34,28 @@ class ErrorBoundary extends Component<Props, State> {
             <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
 
             <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
-              <pre className="text-sm text-muted-foreground whitespace-break-spaces">
-                {this.state.error?.stack}
-              </pre>
+              <div className="text-sm text-muted-foreground mb-3">
+                <strong>Error:</strong> {this.state.error?.message}
+              </div>
+              <details className="cursor-pointer">
+                <summary className="text-xs text-muted-foreground hover:text-foreground mb-2">
+                  Show Details
+                </summary>
+                <pre className="text-xs text-muted-foreground whitespace-break-spaces mt-2">
+                  {this.state.error?.stack}
+                </pre>
+              </details>
+            </div>
+
+            <div className="p-4 w-full rounded bg-yellow-50 border border-yellow-200 mb-6">
+              <p className="text-sm text-yellow-800">
+                <strong>Configuration Issue:</strong> Please ensure all required environment variables are set in your Railway project settings:
+              </p>
+              <ul className="text-xs text-yellow-700 mt-2 ml-4 list-disc">
+                <li>VITE_APP_ID</li>
+                <li>VITE_OAUTH_PORTAL_URL</li>
+                <li>DATABASE_URL</li>
+              </ul>
             </div>
 
             <button
