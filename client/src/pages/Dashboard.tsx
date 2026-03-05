@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { AlertCircle, Wifi, WifiOff, Wrench, Plus, Eye, Users, FileText, Activity, Map as MapIcon } from "lucide-react";
+import { AlertCircle, Wifi, WifiOff, Wrench, Plus, Eye, Users, FileText, Activity, Map as MapIcon, Smartphone } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Dashboard() {
@@ -237,6 +237,12 @@ export default function Dashboard() {
                 <Button className="w-full justify-start" variant="outline">
                   <FileText className="mr-2 h-4 w-4" />
                   التقارير
+                </Button>
+              </Link>
+              <Link href="/client-builder">
+                <Button className="w-full justify-start" variant="outline">
+                  <Smartphone className="mr-2 h-4 w-4" />
+                  منشئ تطبيق العميل
                 </Button>
               </Link>
               {user.role === "admin" && (
