@@ -6,11 +6,15 @@
 export const getBaseUrl = () => {
   // 1. Check for explicit environment variable
   const envUrl = import.meta.env.VITE_API_URL;
-  if (envUrl && envUrl.trim() !== "" && envUrl !== "undefined") {
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== "" && envUrl !== "undefined") {
     try {
-      return new URL(envUrl).origin;
+      // Ensure it's a valid absolute URL before passing to new URL()
+      if (envUrl.startsWith('http://') || envUrl.startsWith('https://')) {
+        return new URL(envUrl).origin;
+      }
+      console.warn("VITE_API_URL is not an absolute URL:", envUrl);
     } catch (e) {
-      console.error("Invalid VITE_API_URL:", envUrl);
+      console.error("Invalid VITE_API_URL format:", envUrl);
     }
   }
 

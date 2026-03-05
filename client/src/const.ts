@@ -30,7 +30,12 @@ export const getLoginUrl = () => {
   const state = btoa(redirectUri);
 
   try {
-    const url = new URL(`${oauthPortalUrl}/app-auth`);
+    // Ensure oauthPortalUrl is a valid absolute URL
+    if (!oauthPortalUrl.startsWith('http://') && !oauthPortalUrl.startsWith('https://')) {
+      throw new Error(`Invalid OAuth Portal URL format: ${oauthPortalUrl}`);
+    }
+    
+    const url = new URL(`${oauthPortalUrl.replace(/\/$/, '')}/app-auth`);
     url.searchParams.set("appId", appId);
     url.searchParams.set("redirectUri", redirectUri);
     url.searchParams.set("state", state);
