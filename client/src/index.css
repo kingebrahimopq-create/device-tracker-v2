@@ -120,6 +120,34 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* RTL Support */
+  html[dir="rtl"],
+  html.rtl {
+    direction: rtl;
+    text-align: right;
+  }
+  html[dir="ltr"],
+  html.ltr {
+    direction: ltr;
+    text-align: left;
+  }
+  /* RTL Sidebar adjustments */
+  html[dir="rtl"] [data-slot="sidebar-container"] {
+    left: auto;
+    right: 0;
+  }
+  html[dir="rtl"] [data-slot="sidebar-gap"] {
+    margin-left: auto;
+    margin-right: 0;
+  }
+  html[dir="rtl"] .group-data-[side=left]:border-r {
+    border-right: none;
+    border-left: 1px solid var(--border);
+  }
+  html[dir="rtl"] .group-data-[side=right]:border-l {
+    border-left: none;
+    border-right: 1px solid var(--border);
+  }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),

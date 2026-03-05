@@ -15,6 +15,8 @@ import Alerts from "./pages/Alerts";
 import UserManagement from "./pages/UserManagement";
 import Reports from "./pages/Reports";
 import Map from "./pages/Map";
+import { useEffect } from "react";
+import { applyRTLStyles } from "./lib/rtl";
 
 function Router() {
   return (
@@ -42,6 +44,13 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  useEffect(() => {
+    // Apply RTL styles for Arabic language
+    const lang = document.documentElement.lang || 'ar';
+    applyRTLStyles(document.documentElement, lang);
+    document.documentElement.setAttribute('lang', lang);
+  }, []);
+
   return (
     <ErrorBoundary>
       <ThemeProvider
