@@ -22,11 +22,9 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
-      # 1. تثبيت pnpm أولاً
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
-      # 2. إعداد Node.js مع التخزين المؤقت
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,31 +34,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 3. بناء ملفات الويب وعمل المزامنة
       - name: Build Web & Sync Capacitor
         run: |
           pnpm build
           npx cap sync android
 
-      # 4. بناء الأندرويد (نسخة Debug لكي تعمل فوراً على الموبايل)
       - name: Build Android app
         run: |
           ANDROID_DIR=$(find . -name "gradlew" -printf '%h\n' | head -n 1)
-          if [ -z "$ANDROID_DIR" ]; then
-            echo "Error: Could not find android directory with gradlew"
-            exit 1
-          fi
-          echo "Building in: $ANDROID_DIR"
           cd "$ANDROID_DIR"
           chmod +x gradlew
-          # التغيير هنا: استخدمنا assembleDebug بدلاً من assembleRelease
+          # التعديل هنا: استخدام assembleDebug لإنتاج ملف قابل للتثبيت فوراً
           ./gradlew assembleDebug
 
-      # 5. رفع الـ APK (سيكون الملف باسم app-debug.apk وهو صالح للتثبيت)
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
+          # المسار الجديد لملف الـ Debug
           path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
           
