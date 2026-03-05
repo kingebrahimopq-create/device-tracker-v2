@@ -1,16 +1,19 @@
+
+
 {
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "dockerfile"
+  "$schema": "https://railway.com/railway.schema.json",
+  "يبني": {
+    "المنشئ": "ملف دوكر"،
+    "dockerfilePath": "Dockerfile"
   },
-  "deploy": {
+  "نشر": {
+    "وقت التشغيل": "الإصدار 2"
     "numReplicas": 1,
     "startCommand": "npm run start",
-    "restartPolicyMaxRetries": 5,
-    "restartPolicyWindowMs": 60000
-  },
-  "variables": {
-    "NODE_ENV": "production",
-    "PORT": "3000"
-  }
-}
+    "sleepApplication": false,
+    "useLegacyStacker": خطأ،
+    "ipv6EgressEnabled": false,
+    "multiRegionConfig": {
+      "europe-west4-drams3a": {
+        "numReplicas": 1
+      }
