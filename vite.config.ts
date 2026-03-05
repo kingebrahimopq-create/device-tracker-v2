@@ -1,10 +1,6 @@
-import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
 import { defineConfig, type Plugin, type ViteDevServer } from "vite";
-import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
 // =============================================================================
 // Manus Debug Collector - Vite Plugin
@@ -150,10 +146,30 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+async function getPlugins() {
+  const [
+    { default: react },
+    { default: tailwindcss },
+    { jsxLocPlugin },
+    { vitePluginManusRuntime }
+  ] = await Promise.all([
+    import("@vitejs/plugin-react"),
+    import("@tailwindcss/vite"),
+    import("@builder.io/vite-plugin-jsx-loc"),
+    import("vite-plugin-manus-runtime")
+  ]);
 
-export default defineConfig({
-  plugins,
+  return [
+    react(),
+    tailwindcss(),
+    jsxLocPlugin(),
+    vitePluginManusRuntime(),
+    vitePluginManusDebugCollector()
+  ];
+}
+
+export default defineConfig(async () => ({
+  plugins: await getPlugins(),
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
