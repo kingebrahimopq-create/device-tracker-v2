@@ -25,7 +25,7 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build project
         run: pnpm build
@@ -57,14 +57,14 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build Web Project
         run: pnpm build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          VITE_OAUTH_PORTAL_URL: ${{ secrets.VITE_OAUTH_PORTAL_URL }}
-          VITE_APP_ID: ${{ secrets.VITE_APP_ID }}
+          VITE_API_URL: https://device-tracker-v2-production.up.railway.app
+          VITE_OAUTH_PORTAL_URL: https://oauth.manus.im
+          VITE_APP_ID: 837e3f59-17c7-408c-80b0-42789cb49c25
 
       - name: Capacitor Sync
         run: npx cap sync android
