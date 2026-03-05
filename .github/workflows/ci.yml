@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -9,49 +9,32 @@ on:
       - main
 
 jobs:
-  build-android:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "pnpm"
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
-      - name: Build Web & Sync Capacitor
-        run: |
-          pnpm build
-          npx cap sync android
+      - name: Build project
+        run: pnpm build
 
-      - name: Build Android app
-        run: |
-          ANDROID_DIR=$(find . -name "gradlew" -printf '%h\n' | head -n 1)
-          cd "$ANDROID_DIR"
-          chmod +x gradlew
-          # التعديل هنا: استخدام assembleDebug لإنتاج ملف قابل للتثبيت فوراً
-          ./gradlew assembleDebug
+      - name: Run tests
+        run: pnpm test
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug
-          # المسار الجديد لملف الـ Debug
-          path: "**/build/outputs/apk/debug/*.apk"
-          if-no-files-found: error
-          
+      # Optional: Add deployment steps here
+      # - name: Deploy to production
+      #   if: github.ref == 'refs/heads/main'
+      #   run: echo "Deploying..."
+      
