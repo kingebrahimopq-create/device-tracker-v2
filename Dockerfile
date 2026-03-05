@@ -7,7 +7,7 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 COPY patches ./patches
 
 # Install dependencies
@@ -28,7 +28,7 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 COPY patches ./patches
 
 # Install production dependencies only
