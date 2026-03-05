@@ -1,16 +1,14 @@
-
 {
   "$schema": "https://railway.com/railway.schema.json",
-  "يبني": {
-    "المنشئ": "ملف دوكر"،
+  "build": {
+    "builder": "dockerfile",
     "dockerfilePath": "Dockerfile"
   },
-  "نشر": {
-    "وقت التشغيل": "الإصدار 2"
+  "deploy": {
     "numReplicas": 1,
     "startCommand": "npm run start",
     "sleepApplication": false,
-    "useLegacyStacker": خطأ،
+    "useLegacyStacker": false,
     "ipv6EgressEnabled": false,
     "multiRegionConfig": {
       "europe-west4-drams3a": {
