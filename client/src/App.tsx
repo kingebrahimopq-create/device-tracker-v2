@@ -15,6 +15,7 @@ import Alerts from "./pages/Alerts";
 import UserManagement from "./pages/UserManagement";
 import Reports from "./pages/Reports";
 import Map from "./pages/Map";
+import ClientBuilder from "./pages/ClientBuilder";
 import { useEffect } from "react";
 import { applyRTLStyles } from "./lib/rtl";
 
@@ -32,6 +33,7 @@ function Router() {
       <Route path={"/users"} component={UserManagement} />
       <Route path={"/reports"} component={Reports} />
       <Route path={"/map"} component={Map} />
+      <Route path={"/client-builder"} component={ClientBuilder} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
